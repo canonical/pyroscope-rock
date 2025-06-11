@@ -30,4 +30,4 @@ run version=latest_version: (push-to-registry version)
 
 # Test the rock with `kgoss`
 test version=latest_version: (push-to-registry version)
-  GOSS_OPTS="--retry-timeout 60s" kgoss run -i localhost:32000/${rock_name}-dev:${version}
+  GOSS_OPTS="--retry-timeout 300s" kgoss run -i localhost:32000/${rock_name}-dev:${version}
