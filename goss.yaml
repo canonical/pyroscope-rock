@@ -8,6 +8,3 @@ http:
   metrics:
     status: 200
     url: http://localhost:4040/metrics
-  status:
-    status: 200
-    url: http://localhost:4040/status
