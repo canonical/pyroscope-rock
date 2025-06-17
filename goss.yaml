@@ -1,0 +1,10 @@
+process:
+  pyroscope:
+    running: true
+http:
+  ready:
+    status: 200
+    url: http://localhost:4040/ready
+  metrics:
+    status: 200
+    url: http://localhost:4040/metrics
