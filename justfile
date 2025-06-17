@@ -1,4 +1,4 @@
-# set quiet # Recipes are silent by default
+set quiet # Recipes are silent by default
 set export # Just variables are exported to environment variables
 
 rock_name := `echo ${PWD##*/} | sed 's/-rock//'`
