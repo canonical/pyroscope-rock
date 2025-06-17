@@ -208,7 +208,7 @@ initialize () {
           --image=${image} ${to_exec} )
         set +x
         info "Waiting for container to be ready"
-        ${k} wait pod/${test_pod_name} --for=condition=Ready --timeout=300s  ${GOSS_KUBECTL_OPTS}
+        ${k} wait pod/${test_pod_name} --for=condition=Ready --timeout=900s  ${GOSS_KUBECTL_OPTS}
         info "Copying goss files into pod/container"
         ${k} cp ${GOSS_KUBECTL_OPTS} $tmp_dir/. ${id}:${GOSS_CONTAINER_PATH}/
         info "Marking copied files as executable"
