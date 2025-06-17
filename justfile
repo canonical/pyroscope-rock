@@ -1,4 +1,4 @@
-set quiet # Recipes are silent by default
+# set quiet # Recipes are silent by default
 set export # Just variables are exported to environment variables
 
 rock_name := `echo ${PWD##*/} | sed 's/-rock//'`
@@ -26,8 +26,8 @@ clean version:
 
 # Run a rock and open a shell into it with `kgoss`
 run version=latest_version: (push-to-registry version)
-  kgoss edit -i localhost:32000/${rock_name}-dev:${version}
+  bash kgoss-timeout.sh edit -i localhost:32000/${rock_name}-dev:${version}
 
 # Test the rock with `kgoss`
 test version=latest_version: (push-to-registry version)
-  GOSS_OPTS="--retry-timeout 60s" kgoss run -i localhost:32000/${rock_name}-dev:${version}
+  GOSS_OPTS="--retry-timeout 60s" bash kgoss-timeout.sh run -i localhost:32000/${rock_name}-dev:${version}
