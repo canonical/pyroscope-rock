@@ -12,3 +12,4 @@ jobs:
     secrets: inherit
     with:
       rock-name: pyroscope
+      risk-track: edge
