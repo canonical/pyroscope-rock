@@ -1,0 +1,61 @@
+name: pyroscope
+summary: Pyroscope in a rock.
+description: "Pyroscope continuous profiling tool."
+version: "1.15.0"
+base: ubuntu@24.04
+license: AGPL-3.0
+services:
+  pyroscope:
+    command: /bin/pyroscope --config.file=/etc/pyroscope/pyroscope.yaml
+    override: replace
+    startup: enabled
+platforms:
+  amd64:
+parts:
+  pyroscope:
+    plugin: go
+    source: https://github.com/grafana/pyroscope
+    source-type: git
+    source-tag: "v1.15.0"
+    source-depth: 1
+    build-snaps:
+      - go/1.24/stable
+    build-environment:
+      - BUILD_IN_CONTAINER: "false"
+    build-packages:
+      - libsystemd-dev
+      - nodejs
+      - npm
+      - libpango1.0-dev
+      - libcairo2-dev
+    override-build: |
+      npm install --global yarn
+      yarn --frozen-lockfile
+      yarn build
+      GIT_REVISION=`git rev-parse HEAD`
+      GIT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+      BUILD_DATE=`date +"%Y-%m-%dT%H:%M:%S%z"`
+      GOAMD64=v2 CGO_ENABLED=0 go build -tags "netgo embedassets" -gcflags="all=-N -l" -ldflags "-extldflags \"-static\" -X github.com/grafana/pyroscope/pkg/util/build.Version=${CRAFT_PROJECT_VERSION} -X github.com/grafana/pyroscope/pkg/util/build.Branch=${GIT_BRANCH} -X github.com/grafana/pyroscope/pkg/util/build.Revision=${GIT_REVISION} -X github.com/grafana/pyroscope/pkg/util/build.BuildDate=${BUILD_DATE}" -o $CRAFT_PART_INSTALL/bin/pyroscope ./cmd/pyroscope
+      GOAMD64=v2 CGO_ENABLED=0 go build -gcflags="all=-N -l" -ldflags "-extldflags \"-static\" -X github.com/grafana/pyroscope/pkg/util/build.Version=${CRAFT_PROJECT_VERSION} -X github.com/grafana/pyroscope/pkg/util/build.Branch=${GIT_BRANCH} -X github.com/grafana/pyroscope/pkg/util/build.Revision=${GIT_REVISION} -X github.com/grafana/pyroscope/pkg/util/build.BuildDate=${BUILD_DATE}" -o $CRAFT_PART_INSTALL/bin/profilecli ./cmd/profilecli
+    stage:
+      - bin/pyroscope
+      - bin/profilecli
+  default-config:
+    plugin: dump
+    source: .
+    organize:
+      pyroscope.yaml: etc/pyroscope/pyroscope.yaml
+    stage:
+      - etc/pyroscope/pyroscope.yaml
+  ca-certs:
+    plugin: nil
+    overlay-packages: [ca-certificates]
+  deb-security-manifest:
+    plugin: nil
+    after:
+      - pyroscope
+      - ca-certs
+    override-prime: |
+      set -x
+      mkdir -p $CRAFT_PRIME/usr/share/rocks/
+      (echo "# os-release" && cat /etc/os-release && echo "# dpkg-query" && dpkg-query --admindir=$CRAFT_PRIME/var/lib/dpkg/ -f '${db:Status-Abbrev},${binary:Package},${Version},${source:Package},${Source:Version}\n' -W) > $CRAFT_PRIME/usr/share/rocks/dpkg.query
