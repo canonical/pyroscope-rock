@@ -19,7 +19,7 @@ parts:
     source-tag: "v1.17.1"
     source-depth: 1
     build-snaps:
-      - go/1.24/stable
+      - go/1.24/candidate
     build-environment:
       - BUILD_IN_CONTAINER: "false"
     build-packages:
