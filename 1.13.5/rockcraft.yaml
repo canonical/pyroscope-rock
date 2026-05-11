@@ -2,7 +2,7 @@ name: pyroscope
 summary: Pyroscope in a rock.
 description: "Pyroscope continuous profiling tool."
 version: "1.13.5"
-base: ubuntu@24.04
+base: ubuntu@26.04
 license: AGPL-3.0
 services:
   pyroscope:
