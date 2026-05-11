@@ -18,6 +18,7 @@ parts:
     source-type: git
     source-tag: "v1.13.4"
     source-depth: 1
+    source-submodules: []
     build-snaps:
       - go/1.23/stable
     build-environment:
