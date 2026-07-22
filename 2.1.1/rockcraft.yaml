@@ -42,7 +42,7 @@ parts:
       cd ..
       GIT_REVISION=`git rev-parse HEAD`
       GIT_BRANCH=`git rev-parse --abbrev-ref HEAD`
-      BUILD_DATE=`date +"%Y-%m-%dT%H:%M:%S%z"`
+      BUILD_DATE=$(git log -1 --date=iso-strict --format=%cd)   # commit date => reproducible
       GOAMD64=v2 CGO_ENABLED=0 go build -tags "netgo embedassets" -gcflags="all=-N -l" -ldflags "-extldflags \"-static\" -X github.com/grafana/pyroscope/v2/pkg/util/build.Version=${CRAFT_PROJECT_VERSION} -X github.com/grafana/pyroscope/v2/pkg/util/build.Branch=${GIT_BRANCH} -X github.com/grafana/pyroscope/v2/pkg/util/build.Revision=${GIT_REVISION} -X github.com/grafana/pyroscope/v2/pkg/util/build.BuildDate=${BUILD_DATE}" -o $CRAFT_PART_INSTALL/bin/pyroscope ./cmd/pyroscope
       GOAMD64=v2 CGO_ENABLED=0 go build -gcflags="all=-N -l" -ldflags "-extldflags \"-static\" -X github.com/grafana/pyroscope/v2/pkg/util/build.Version=${CRAFT_PROJECT_VERSION} -X github.com/grafana/pyroscope/v2/pkg/util/build.Branch=${GIT_BRANCH} -X github.com/grafana/pyroscope/v2/pkg/util/build.Revision=${GIT_REVISION} -X github.com/grafana/pyroscope/v2/pkg/util/build.BuildDate=${BUILD_DATE}" -o $CRAFT_PART_INSTALL/bin/profilecli ./cmd/profilecli
     stage:
