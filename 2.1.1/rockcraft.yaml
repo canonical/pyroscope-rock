@@ -20,25 +20,21 @@ parts:
     source-depth: 1
     source-submodules: []
     build-snaps:
-      - go/1.25/stable
+      - go/1.25/candidate
+      - node/24/stable        # ui/ requires node >=24; 26.04 apt only has node 22
     build-environment:
       - BUILD_IN_CONTAINER: "false"
     build-packages:
       - libsystemd-dev
-      - nodejs
-      - npm
       - libpango1.0-dev
       - libcairo2-dev
     override-build: |
-      # Pyroscope v2 moved the frontend into ui/ (no root package.json) and builds it
-      # with corepack + yarn(berry) -> ui/dist, embedded into the binary via `embedassets`.
+      # ui/ builds with yarn 4 via corepack; the node snap's bin isn't on PATH by default.
+      export PATH="/snap/node/current/bin:${PATH}"
+      export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
       cd ui
-      npm uninstall --global yarn >/dev/null 2>&1 || true
-      hash -r || true
-      corepack enable
-      corepack prepare yarn@4.13.0 --activate
-      yarn install --immutable
-      yarn build
+      corepack yarn install --immutable
+      corepack yarn build
       cd ..
       GIT_REVISION=`git rev-parse HEAD`
       GIT_BRANCH=`git rev-parse --abbrev-ref HEAD`
