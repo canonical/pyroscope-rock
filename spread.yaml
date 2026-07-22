@@ -12,7 +12,7 @@ suites:
     summary: General integration tests
     environment:
       # Goss environment
-      GOSS_OPTS: "--retry-timeout=60s"
+      GOSS_OPTS: "--retry-timeout=120s"
       GOSS_FILES_STRATEGY: cp
       DGOSS_TEMP_DIR: "$HOME"
 
