@@ -23,10 +23,17 @@ suites:
       # Pin goss + dgoss to a fixed release: upstream `goss.rocks/install` now
       # builds a goreleaser .tar.gz URL that release v0.4.9 doesn't publish (404).
       GOSS_VER=v0.4.9
-      sudo curl -fsSL -o /usr/local/bin/goss "https://github.com/goss-org/goss/releases/download/${GOSS_VER}/goss-linux-amd64"
-      echo "87dd36cfa1b8b50554e6e2ca29168272e26755b19ba5438341f7c66b36decc19  /usr/local/bin/goss" | sha256sum -c -
-      sudo curl -fsSL -o /usr/local/bin/dgoss "https://raw.githubusercontent.com/goss-org/goss/${GOSS_VER}/extras/dgoss/dgoss"
-      sudo chmod +rx /usr/local/bin/goss /usr/local/bin/dgoss
+      BASE="https://github.com/goss-org/goss/releases/download/${GOSS_VER}"
+      
+      tmp="$(mktemp -d)"
+      for f in goss-linux-amd64 dgoss; do
+        curl -fsSL -o "$tmp/$f"        "$BASE/$f"
+        curl -fsSL -o "$tmp/$f.sha256" "$BASE/$f.sha256"
+        ( cd "$tmp" && sha256sum -c "$f.sha256" )
+      done
+      sudo install -m 0755 "$tmp/goss-linux-amd64" /usr/local/bin/goss
+      sudo install -m 0755 "$tmp/dgoss"            /usr/local/bin/dgoss
+      rm -rf "$tmp"
 
       # For 'rockcraft.skopeo'
       sudo snap install --classic rockcraft
