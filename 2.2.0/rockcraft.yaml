@@ -36,6 +36,7 @@ parts:
       corepack yarn install --immutable
       corepack yarn build
       cd ..
+      go get golang.org/x/text@v0.39.0 google.golang.org/grpc@v1.82.1
       GIT_REVISION=`git rev-parse HEAD`
       GIT_BRANCH=`git rev-parse --abbrev-ref HEAD`
       BUILD_DATE=$(git log -1 --date=iso-strict --format=%cd)   # commit date => reproducible
