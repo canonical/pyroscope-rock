@@ -1,7 +1,7 @@
 name: pyroscope
 summary: Pyroscope in a rock.
 description: "Pyroscope continuous profiling tool."
-version: "1.15.0"
+version: "1.18.2"
 base: ubuntu@26.04
 license: AGPL-3.0
 services:
@@ -16,11 +16,11 @@ parts:
     plugin: go
     source: https://github.com/grafana/pyroscope
     source-type: git
-    source-tag: "v1.15.0"
+    source-tag: "v1.18.2"
     source-depth: 1
     source-submodules: []
     build-snaps:
-      - go/1.24/stable
+      - go/1.24/candidate
     build-environment:
       - BUILD_IN_CONTAINER: "false"
     build-packages:
