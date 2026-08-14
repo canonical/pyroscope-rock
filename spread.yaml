@@ -12,28 +12,14 @@ suites:
     summary: General integration tests
     environment:
       # Goss environment
-      GOSS_OPTS: "--retry-timeout=120s"
+      GOSS_OPTS: "--retry-timeout=60s"
       GOSS_FILES_STRATEGY: cp
       DGOSS_TEMP_DIR: "$HOME"
 
     prepare: |
       # Install dependencies
       sudo snap install docker
-
-      # Pin goss + dgoss to a fixed release: upstream `goss.rocks/install` now
-      # builds a goreleaser .tar.gz URL that release v0.4.9 doesn't publish (404).
-      GOSS_VER=v0.4.9
-      BASE="https://github.com/goss-org/goss/releases/download/${GOSS_VER}"
-      
-      tmp="$(mktemp -d)"
-      for f in goss-linux-amd64 dgoss; do
-        curl -fsSL -o "$tmp/$f"        "$BASE/$f"
-        curl -fsSL -o "$tmp/$f.sha256" "$BASE/$f.sha256"
-        ( cd "$tmp" && sha256sum -c "$f.sha256" )
-      done
-      sudo install -m 0755 "$tmp/goss-linux-amd64" /usr/local/bin/goss
-      sudo install -m 0755 "$tmp/dgoss"            /usr/local/bin/dgoss
-      rm -rf "$tmp"
+      curl -fsSL https://goss.rocks/install | sh
 
       # For 'rockcraft.skopeo'
       sudo snap install --classic rockcraft
